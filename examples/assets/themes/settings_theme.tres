@@ -1,0 +1,21 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://bjemcxo6mk3o0"]
+
+[ext_resource type="FontFile" uid="uid://jlk50ofleg0u" path="res://examples/assets/fonts/roboto_mono/static/RobotoMono-Medium.ttf" id="1_rqhtm"]
+[ext_resource type="FontFile" uid="uid://dryiwkwf6wup7" path="res://examples/assets/fonts/roboto_mono/static/RobotoMono-Light.ttf" id="2_yxviw"]
+[ext_resource type="FontFile" uid="uid://bgl2nev3xnwl8" path="res://examples/assets/fonts/roboto_mono/static/RobotoMono-SemiBold.ttf" id="3_ni0pe"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_osclo"]
+bg_color = Color(0.133196, 0.133196, 0.133196, 1)
+
+[resource]
+Button/font_sizes/font_size = 32
+Button/fonts/font = ExtResource("1_rqhtm")
+Label/font_sizes/font_size = 32
+Label/fonts/font = ExtResource("2_yxviw")
+LineEdit/font_sizes/font_size = 32
+LineEdit/fonts/font = ExtResource("2_yxviw")
+Panel/styles/panel = SubResource("StyleBoxFlat_osclo")
+TabBar/font_sizes/font_size = 32
+TabBar/fonts/font = ExtResource("3_ni0pe")
+TabContainer/font_sizes/font_size = 32
+TabContainer/fonts/font = ExtResource("3_ni0pe")
