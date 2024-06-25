@@ -109,58 +109,16 @@ func generate():
 
 
 func get_cell_at(coords: Vector2i) -> MazeGridCell:
-	return cells[coords] if cells.has(coords) else null
-
-
-func get_cell_east(coords: Vector2i, distance: int = 1) -> MazeGridCell:
-	return get_cell_from(coords, "e", distance)
-
-
-func get_cell_from(coords: Vector2i, direction: StringName, distance: int = 1) -> MazeGridCell:
-	return get_cell_at(get_coords(coords, get_vector_from_direction(direction), distance))
-
-
-func get_cell_north(coords: Vector2i, distance: int = 1) -> MazeGridCell:
-	return get_cell_from(coords, "n", distance)
-
-
-func get_cell_northeast(coords: Vector2i, distance: int = 1) -> MazeGridCell:
-	return get_cell_from(coords, "ne", distance)
-
-
-func get_cell_northwest(coords: Vector2i, distance: int = 1) -> MazeGridCell:
-	return get_cell_from(coords, "nw", distance)
-
-
-func get_cell_south(coords: Vector2i, distance: int = 1) -> MazeGridCell:
-	return get_cell_from(coords, "s", distance)
-
-
-func get_cell_southeast(coords: Vector2i, distance: int = 1) -> MazeGridCell:
-	return get_cell_from(coords, "se", distance)
-
-
-func get_cell_southwest(coords: Vector2i, distance: int = 1) -> MazeGridCell:
-	return get_cell_from(coords, "sw", distance)
-
-
-func get_cell_west(coords: Vector2i, distance: int = 1) -> MazeGridCell:
-	return get_cell_from(coords, "w", distance)
-
-
-func get_coords(coords: Vector2i, direction: Vector2i, distance: int = 1) -> Vector2i:
-	return coords + Vector2i(
-		direction.x * distance,
-		direction.y * distance
-	)
+	return cells.get(coords, null)
 
 
 func get_neighbors(coords: Vector2i, cardinal: bool = true) -> Array[MazeGridCell]:
 	var neighbors: Array[MazeGridCell] = []
-	var directions := get_directions(cardinal)
+	var distance: int = 1
 	
-	for direction in directions:
-		var neighbor: MazeGridCell = get_cell_from(coords, direction)
+	for direction in cardinal_directions:
+		var neighbor_coords = get_vector_from_direction(direction, coords, distance)
+		var neighbor: MazeGridCell = get_cell_at(neighbor_coords)
 		if neighbor:
 			neighbors.append(neighbor)
 	

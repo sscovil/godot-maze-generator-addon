@@ -74,7 +74,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 ## Updates value of `preview_maze` RichTextLabel with BBCode representation of `grid`.
 func draw_grid() -> void:
 	# Wrap the rich text representation of `grid`, to center it horizontally.
-	var rich_text = "[center]%s[/center]" % grid.to_rich_text()
+	var rich_text: String = "[center]%s[/center]" % grid.to_rich_text()
 	# Update the RichTextLabel text value.
 	preview_maze.set_text(rich_text)
 
@@ -206,9 +206,9 @@ func _update_settings_grid_size_tooltip(axis: String) -> void:
 ## used to indicate that a random position should be chosen, which is why -1 is allowed as a value
 ## in the Settings UI. However, a value of Vector2i(-1, 3) for example, would be invalid and so it
 ## must not be allowed.
-func _update_settings_start_coords(axis: String, value: float) -> void:
-	var other_axis = Y if axis == X else X
-	var max_value = grid.grid_size[axis] - 1
+func _update_settings_start_coords(axis: StringName, value: float) -> void:
+	var other_axis: StringName = Y if axis == X else X
+	var max_value: int = grid.grid_size[axis] - 1
 	
 	# Ensure the value is constrained to the valid range, based on `grid.grid_size`.
 	grid.start_coords[axis] = clampi(floor(value), -1, max_value)
@@ -226,7 +226,7 @@ func _update_settings_start_coords(axis: String, value: float) -> void:
 
 ## When `grid.grid_size` changes, update the corresponding `grid.start_coords` max value.
 func _update_settings_start_coords_max_value(axis: String) -> void:
-	var max_value = grid.grid_size[axis] - 1
+	var max_value: int = grid.grid_size[axis] - 1
 	
 	# Update the SpinBox max value in the Settings UI.
 	settings_start_coords[axis].set_max(max_value)

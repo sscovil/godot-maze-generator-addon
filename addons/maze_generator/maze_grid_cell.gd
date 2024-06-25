@@ -38,7 +38,7 @@ func to_dict() -> Dictionary:
 
 func get_wall_count(cardinal: bool = true) -> int:
 	var count: int = 0
-	var directions: Array[StringName] = get_directions(cardinal)
+	var directions: Array[StringName] = cardinal_directions
 	
 	for direction in directions:
 		if walls[direction]:
