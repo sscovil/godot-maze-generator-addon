@@ -1,23 +1,28 @@
 [gd_scene load_steps=8 format=3 uid="uid://b2shan3em01g3"]
 
-[ext_resource type="Script" path="res://examples/2d/printable_maze_grid/example.gd" id="1_gt4q6"]
-[ext_resource type="Script" path="res://addons/maze_generator/printable_maze.gd" id="2_tbgvs"]
+[ext_resource type="Script" path="res://examples/2d/rich_text/example.gd" id="1_gt4q6"]
+[ext_resource type="Script" path="res://addons/maze_generator/maze.gd" id="2_atk16"]
 [ext_resource type="Script" path="res://addons/maze_generator/maze_grid.gd" id="3_2m2vd"]
 [ext_resource type="Theme" uid="uid://bjemcxo6mk3o0" path="res://examples/assets/themes/settings_theme.tres" id="3_mbxpp"]
 [ext_resource type="Theme" uid="uid://dlu0hbktlkj8x" path="res://examples/assets/themes/grid_preview_theme.tres" id="4_b072u"]
 [ext_resource type="FontFile" uid="uid://cmunte0hjobbi" path="res://examples/assets/fonts/roboto_mono/static/RobotoMono-Bold.ttf" id="5_cstjk"]
 
-[sub_resource type="Resource" id="Resource_ejfco"]
+[sub_resource type="Resource" id="Resource_8wcpc"]
 script = ExtResource("3_2m2vd")
 size = Vector2i(16, 8)
 start_coords = Vector2i(-1, -1)
+start_color = Color(0, 1, 0, 1)
+end_color = Color(1, 1, 0, 1)
+terminal_color = Color(1, 0, 0, 1)
+path_color = Color(0.745098, 0.745098, 0.745098, 1)
+wall_color = Color(0.411765, 0.411765, 0.411765, 1)
 
 [node name="Example" type="Node2D"]
 script = ExtResource("1_gt4q6")
 
-[node name="PrintableMaze" type="Node2D" parent="."]
-script = ExtResource("2_tbgvs")
-grid = SubResource("Resource_ejfco")
+[node name="Maze" type="Node2D" parent="."]
+script = ExtResource("2_atk16")
+grid = SubResource("Resource_8wcpc")
 
 [node name="TabContainer" type="TabContainer" parent="."]
 anchors_preset = 15

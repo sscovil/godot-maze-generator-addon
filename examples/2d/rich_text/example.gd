@@ -12,13 +12,13 @@ const X: StringName = "x"
 ## Syntactic sugar; use Y as a Dictionary key instead of the string "y".
 const Y: StringName = "y"
 
-## PrintableMazeGrid child node.
-@onready var maze: PrintableMaze = $PrintableMaze
+## Maze child node.
+@onready var maze: Maze = $Maze
 
-## RichTextLabel where BBCode representation of PrintableMazeGrid is displayed.
+## RichTextLabel where BBCode representation of Maze is displayed.
 @onready var preview_maze: RichTextLabel = $TabContainer/Preview/Maze
 
-## ProgressBar displayed when generating a new MazeGrid.
+## ProgressBar displayed when generating a new Maze.
 @onready var preview_progress_bar: ProgressBar = $TabContainer/Preview/ProgressBar
 
 ## HSlider nodes in the Settings UI, used for adjusting `maze.grid.size`.
@@ -66,7 +66,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey:
 		return
 	
-	# Regenerate the MazeGrid when the R key is pressed on the Preview tab.
+	# Regenerate the Maze when the R key is pressed on the Preview tab.
 	if is_current_tab_preview() and event.keycode == KEY_R and event.is_pressed():
 		await maze.generate()
 
@@ -74,7 +74,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 ## Updates value of `preview_maze` RichTextLabel with BBCode representation of `maze`.
 func draw_grid() -> void:
 	# Wrap the rich text representation of `maze`, to center it horizontally.
-	var rich_text: String = "[center]%s[/center]" % maze.to_rich_text()
+	var rich_text: String = "[center]%s[/center]" % maze.grid.to_rich_text()
 	# Update the RichTextLabel text value.
 	preview_maze.set_text(rich_text)
 
@@ -106,7 +106,7 @@ func is_current_tab_settings() -> bool:
 
 ## Connects signals to the appropriate handler methods.
 func _connect_signals() -> void:
-	# Used to display a progress bar when generating the MazeGrid.
+	# Used to display a progress bar when generating the Maze.
 	maze.generate_begin.connect(_on_grid_generate_begin)
 	maze.generate_end.connect(_on_grid_generate_end)
 	maze.generate_progress.connect(_on_grid_generate_progress)

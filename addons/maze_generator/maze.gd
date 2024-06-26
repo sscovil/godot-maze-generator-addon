@@ -56,11 +56,11 @@ func generate():
 	var visited: Array[Vector2i] = []
 	
 	if grid.RandomPosition == grid.start_coords:
-		coords = get_random_coords()
+		coords = grid.get_random_coords()
 	else:
 		coords = grid.start_coords.clamp(Vector2i.ZERO, grid.size)
 	
-	set_cell_as_type(coords, MazeGridCell.Type.START)
+	grid.set_cell_as_type(coords, MazeGridCell.Type.START)
 	
 	while true:
 		if coords not in visited:
@@ -68,7 +68,7 @@ func generate():
 		
 		# If all cells have been visited, we are done.
 		if visited.size() == size():
-			set_cell_as_type(coords, MazeGridCell.Type.END)
+			grid.set_cell_as_type(coords, MazeGridCell.Type.END)
 			# Emit signal that generation has ended.
 			generate_end.emit()
 			# Exit the while loop.
@@ -79,7 +79,7 @@ func generate():
 		if next_cell:
 			# Knock down the walls between next cell and the previously visited cell.
 			backtracking = false
-			set_adjoining_walls(coords, next_cell.coords, false)
+			grid.set_adjoining_walls(coords, next_cell.coords, false)
 			coords = next_cell.coords
 			cursor = visited.size() - 1
 			# Update progress and emit signal.
@@ -92,59 +92,10 @@ func generate():
 		else:
 			# Backtrack through the maze until we can travel to an unvisited cell.
 			if !backtracking:
-				set_cell_as_type(coords, MazeGridCell.Type.TERMINAL)
+				grid.set_cell_as_type(coords, MazeGridCell.Type.TERMINAL)
 				backtracking = true
 			cursor -= 1
 			coords = visited[cursor]
-
-
-func get_cell(direction: StringName, relative_to: Vector2i, distance: int = 1) -> MazeGridCell:
-	var coords: Vector2i = Direction.get_vector(direction, relative_to, distance)
-
-	return get_cell_at(coords)
-
-
-func get_cell_at(coords: Vector2i) -> MazeGridCell:
-	return grid.cells.get(coords, null)
-
-
-func get_cell_neighbors(coords: Vector2i, cardinal: bool = true) -> Array[MazeGridCell]:
-	var neighbors: Array[MazeGridCell] = []
-	var distance: int = 1
-	
-	for direction in Direction.cardinal:
-		var neighbor_coords = Direction.get_vector(direction, coords, distance)
-		var neighbor: MazeGridCell = get_cell_at(neighbor_coords)
-		if neighbor:
-			neighbors.append(neighbor)
-	
-	return neighbors
-
-
-func get_random_cell() -> MazeGridCell:
-	return grid.cells[get_random_coords()]
-
-
-func get_random_coords() -> Vector2i:
-	return grid.cells.keys().pick_random()
-
-
-func set_adjoining_walls(coords_a: Vector2i, coords_b: Vector2i, value: bool) -> void:
-	var cell_a := get_cell_at(coords_a)
-	var cell_b := get_cell_at(coords_b)
-	
-	if cell_a:
-		cell_a.walls[Direction.get_direction(coords_b - coords_a)] = value
-	
-	if cell_b:
-		cell_b.walls[Direction.get_direction(coords_a - coords_b)] = value
-
-
-func set_cell_as_type(coords: Vector2i, type: MazeGridCell.Type) -> void:
-	var cell := get_cell_at(coords)
-	
-	if cell:
-		cell.type = type
 
 
 func size() -> int:
@@ -152,7 +103,7 @@ func size() -> int:
 
 
 func _get_random_unvisited_neighbor(coords: Vector2i, visited: Array[Vector2i]) -> MazeGridCell:
-	var neighbors := get_cell_neighbors(coords, true)
+	var neighbors := grid.get_cell_neighbors(coords, true)
 	
 	neighbors.shuffle()
 	

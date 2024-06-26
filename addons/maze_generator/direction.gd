@@ -1,3 +1,5 @@
+## A collection of constants, static variables, and static methods related to map directions
+## (e.g. north, east, south, west) and 2D grid coordinates, required by the MazeGenerator plugin.
 class_name Direction
 extends Object
 
