@@ -9,7 +9,7 @@ const RandomPosition := Vector2i(-1, -1)
 ## and paths that connect each cell; the actual maze will be (size * 2 + 1).
 @export var size := Vector2i(8, 8)
 
-## Grid coordinates for the desired starting position. If set to `Vector2i(-1, -1)` (the default), a
+## Grid coordinates for the desired starting position. If set to RandomPosition (the default), a
 ## random cell will be chosen each time the maze is generated.
 @export var start_coords: Vector2i = RandomPosition
 
@@ -34,7 +34,7 @@ const RandomPosition := Vector2i(-1, -1)
 ## path that connects two cells.
 @export var wall_color := Color.DIM_GRAY
 
-## A map of `Vector2i` coordinates and their corresponding `MazeGridCell` objects.
+## A map of Vector2i coordinates and their corresponding `MazeGridCell` objects.
 var cells: Dictionary = {}
 
 

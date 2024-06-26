@@ -68,13 +68,15 @@ custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="TabContainer/Settings/List"]
+[node name="SettingsLabel" type="Label" parent="TabContainer/Settings/List"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_cstjk")
 theme_override_font_sizes/font_size = 36
 text = "MazeGrid Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="SettingsLabelSeparate" type="HSeparator" parent="TabContainer/Settings/List"]
+[node name="SettingsLabelSeparator" type="HSeparator" parent="TabContainer/Settings/List"]
 modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(2.08165e-12, 60)
 layout_mode = 2
@@ -169,6 +171,35 @@ value = -1.0
 alignment = 1
 
 [node name="StartCoordsSeparator" type="HSeparator" parent="TabContainer/Settings/List"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(2.08165e-12, 60)
+layout_mode = 2
+
+[node name="PreviewOptionsLabel" type="Label" parent="TabContainer/Settings/List"]
+layout_mode = 2
+text = "Preview Loading Options"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PreviewOptionsLabelSeparator" type="HSeparator" parent="TabContainer/Settings/List"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(2.08165e-12, 30)
+layout_mode = 2
+
+[node name="PreviewOptionShowNothing" type="CheckButton" parent="TabContainer/Settings/List"]
+layout_mode = 2
+button_pressed = true
+text = "Show Nothing (Fastest)"
+
+[node name="PreviewOptionShowProgressBar" type="CheckButton" parent="TabContainer/Settings/List"]
+layout_mode = 2
+text = "Show Progress Bar"
+
+[node name="PreviewOptionShowMaze" type="CheckButton" parent="TabContainer/Settings/List"]
+layout_mode = 2
+text = "Show Maze"
+
+[node name="PreviewOptionsSeparator" type="HSeparator" parent="TabContainer/Settings/List"]
 modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(2.08165e-12, 60)
 layout_mode = 2

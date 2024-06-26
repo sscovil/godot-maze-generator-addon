@@ -19,8 +19,8 @@ static var cardinal: Array[StringName] = [N, E, S, W]
 static var list: Array[StringName] = [N, NE, E, SE, S, SW, W, NW]
 
 ## Used to determine which value should be added to a 2D maze coordinate, to find the coordinate in
-## a given direction. For example, if you are at `Vector2i(0, 0)` and want to travel north three
-## spaces, you would move to `Vector2i(0, 0) + direction_vector_map[N] * 3`.
+## a given direction. For example, if you are at Vector2i(0, 0) and want to travel north three
+## spaces, you would move to `Vector2i(0, 0) + Direction.direction_vector_map[N] * 3`.
 static var direction_vector_map: Dictionary = {
 	Direction.N: Vector2i(0, -1),
 	Direction.NE: Vector2i(1, -1),
@@ -33,8 +33,8 @@ static var direction_vector_map: Dictionary = {
 }
 
 ## Used to determine which direction a 2D maze coordinate is, relative to another coordinate. For
-## example, if you are at `Vector2i(0, 0)` and want to know which direction `Vector2i(0, -1)` is in,
-## you could use `vector_direction_map[Vector2i(0, -1)]` to determine it is north.
+## example, if you are at Vector2i(0, 0) and want to know which direction Vector2i(0, -1) is in,
+## you could use `Direction.vector_direction_map[Vector2i(0, -1)]` to determine it is north.
 static var vector_direction_map: Dictionary = {
 	Vector2i(0, -1): Direction.N,
 	Vector2i(1, -1): Direction.NE,
@@ -48,7 +48,7 @@ static var vector_direction_map: Dictionary = {
 
 
 ## Find the direction of one vector, relative to another (defaults to Vector2i.ZERO). For example,
-## if you are at `Vector2i(0, -1)` and want to know which direction `Vector2i(0, -3)` is in, you can
+## if you are at Vector2i(0, -1) and want to know which direction Vector2i(0, -3) is in, you can
 ## call `Direction.get_direction(Vector2i(0, -3), Vector2i(0, -1))` to determine it is north.
 static func get_direction(vector: Vector2i, relative_to := Vector2i.ZERO) -> StringName:
 	var relative_vector: Vector2i = vector - relative_to
@@ -59,8 +59,8 @@ static func get_direction(vector: Vector2i, relative_to := Vector2i.ZERO) -> Str
 
 
 ## Find the vector in a given direction and distance, relative to a known vector. For example, if
-## you are at `Vector2i(0, -1)` and want to travel north two spaces, you can call
-## `Direction.get_vector(Direction.N, Vector2i(0, -1), 2` to get the vector `Vector2i(0, -3)`.
+## you are at Vector2i(0, -1) and want to travel north two spaces, you can call
+## `Direction.get_vector(Direction.N, Vector2i(0, -1), 2)` to get the vector Vector2i(0, -3).
 static func get_vector(
 	direction: StringName,
 	relative_to := Vector2i.ZERO,

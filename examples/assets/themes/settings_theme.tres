@@ -10,6 +10,8 @@ bg_color = Color(0.133196, 0.133196, 0.133196, 1)
 [resource]
 Button/font_sizes/font_size = 32
 Button/fonts/font = ExtResource("1_rqhtm")
+CheckButton/font_sizes/font_size = 28
+CheckButton/fonts/font = ExtResource("2_yxviw")
 Label/font_sizes/font_size = 32
 Label/fonts/font = ExtResource("2_yxviw")
 LineEdit/font_sizes/font_size = 32
