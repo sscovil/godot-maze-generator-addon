@@ -10,16 +10,11 @@ signal generate_progress(progress: float)
 
 @export_group("Generator Settings")
 
-## If set to `true`, the `generate()` method will await the next process frame periodically, to
-## allow UI updates (i.e. for a ProgressBar). The frequency of these delays can be tuned using the
-## `await_increment` setting; a higher value means faster grid generation with fewer pauses for UI
-## updates.
-@export var await_after_signals: bool = false
-
-## If `await_after_signals` is set to `true`, this value can be used to tune how often the
-## `generate()` method pauses to allow for UI updates (i.e. for a ProgressBar). A higher value
-## means faster grid generation with fewer pauses for UI updates.
-@export var await_increment: int = 20
+## If set to `true`, the `generate_progress` signal will be emitted at various increments when the
+## `generate()` method is called. This makes the process of generating a maze more asynchronous, in
+## that methods connected to that signal will be called, but it also makes `generate()` take a bit
+## longer to complete.
+@export var emit_progress_signals: bool = false
 
 
 ## Generate a maze by picking a random, unvisited neighboring cell and knocking down the walls
@@ -27,28 +22,25 @@ signal generate_progress(progress: float)
 ## to find alternative paths, until every cell has been visited.
 func generate():
 	var progress: float = 0.0
-	var steps: int = grid.size.x * grid.size.y * 2
+	var steps: int = grid.size.x * grid.size.y
 	var increment: float = 100.0 / steps
+	
+	grid.clear()
 	
 	# Emit signal that generation has begun.
 	generate_begin.emit()
-	# Pause until the next frame, to allow signal handlers to run.
-	if await_after_signals:
-		await _next_frame()
-	
-	grid.cells = {}
 	
 	for x in range(grid.size.x):
 		for y in range(grid.size.y):
 			var coords := Vector2i(x, y)
 			var cell := MazeGridCell.new(coords)
 			grid.cells[coords] = cell
+		
+		if emit_progress_signals:
 			# Update progress and emit signal.
 			progress += increment
 			generate_progress.emit(progress)
-			# Pause until the next frame, to allow signal handlers to run.
-			if await_after_signals and ((progress / increment) as int) % await_increment == 0:
-				await _next_frame()
+			await _next_frame()
 	
 	var backtracking: bool = false
 	var coords: Vector2i
@@ -82,11 +74,11 @@ func generate():
 			grid.set_adjoining_walls(coords, next_cell.coords, false)
 			coords = next_cell.coords
 			cursor = visited.size() - 1
-			# Update progress and emit signal.
-			progress += increment
-			generate_progress.emit(progress)
-			# Pause until the next frame, to allow signal handlers to run.
-			if await_after_signals and ((progress / increment) as int) % await_increment == 0:
+			
+			if emit_progress_signals:
+				# Update progress and emit signal.
+				progress += increment
+				generate_progress.emit(progress)
 				await _next_frame()
 			
 		else:
@@ -96,6 +88,11 @@ func generate():
 				backtracking = true
 			cursor -= 1
 			coords = visited[cursor]
+
+
+func generate_next_frame() -> void:
+	await _next_frame()
+	generate()
 
 
 func size() -> int:

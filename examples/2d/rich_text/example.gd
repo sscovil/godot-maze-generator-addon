@@ -12,6 +12,10 @@ const X: StringName = "x"
 ## Syntactic sugar; use Y as a Dictionary key instead of the string "y".
 const Y: StringName = "y"
 
+## If `true`, a progress bar will be displayed when generating the maze; if `false` (default), the
+## maze will be redrawn at each increment, as it is generated.
+@export var show_progress_bar: bool = false
+
 ## Maze child node.
 @onready var maze: Maze = $Maze
 
@@ -51,7 +55,7 @@ func _ready() -> void:
 	# Generate the initial GridMaze.
 	maze.generate()
 	# Enable support for signals, so we can update $TabContainer/Preview/ProgressBar.
-	maze.await_after_signals = true
+	maze.emit_progress_signals = true
 	# Connect signals to the appropriate handler methods.
 	_connect_signals()
 	# Initialize values for the Settings UI.
@@ -143,21 +147,30 @@ func _initialize_settings() -> void:
 
 ## Hides `preview_maze`, and initializes and shows `preview_progress_bar`.
 func _on_grid_generate_begin() -> void:
-	preview_maze.set_visible(false)
-	preview_progress_bar.set_value(0)
-	preview_progress_bar.set_visible(true)
+	if show_progress_bar:
+		preview_maze.set_visible(false)
+		preview_progress_bar.set_value(0)
+		preview_progress_bar.set_visible(true)
+	else:
+		draw_grid()
 
 
 ## Hides `preview_progress_bar`, and redraws and shows `preview_maze`.
 func _on_grid_generate_end() -> void:
-	draw_grid()
-	preview_progress_bar.set_visible(false)
-	preview_maze.set_visible(true)
+	if show_progress_bar:
+		draw_grid()
+		preview_progress_bar.set_visible(false)
+		preview_maze.set_visible(true)
+	else:
+		draw_grid()
 
 
 ## Updates `preview_progress_bar` incrementally, based on `generate_progress` signal data.
 func _on_grid_generate_progress(progress: float) -> void:
-	preview_progress_bar.set_value(progress)
+	if show_progress_bar:
+		preview_progress_bar.set_value(progress)
+	else:
+		draw_grid()
 
 
 ## Sync HSlider with `maze.grid.size.x`, HSlider tooltip, and `maze.grid.start_coords.x` max value.
@@ -193,7 +206,7 @@ func _on_settings_start_coords_y_value_changed(value: float) -> void:
 func _on_tab_container_tab_changed(tab: int) -> void:
 	if tab as Tab == Tab.PREVIEW and has_settings_changed():
 		last_grid_size = maze.grid.size
-		maze.generate()
+		maze.generate_next_frame()
 
 
 ## Displays numeric value in tooltip when hovering over an HSlider in the Settings UI.

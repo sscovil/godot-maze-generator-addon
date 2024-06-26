@@ -1,21 +1,45 @@
+## This resource is used to generate, store, and access layout data for a Maze.
 class_name MazeGrid
 extends Resource
 
+## Used to indicate that `start_coords` should be random.
 const RandomPosition := Vector2i(-1, -1)
 
+## The desired grid size of the maze. Note that "grid size" does not include the size of the walls
+## and paths that connect each cell; the actual maze will be (size * 2 + 1).
 @export var size := Vector2i(8, 8)
+
+## Grid coordinates for the desired starting position. If set to `Vector2i(-1, -1)` (the default), a
+## random cell will be chosen each time the maze is generated.
 @export var start_coords: Vector2i = RandomPosition
 
+## These settings can be used to customize the appearance of the output generated from the
+## `to_rich_text()` method, and are probably not useful for anything beyond demonstration purposes.
 @export_group("Rich Text Colors")
 
+## Color of the first cell generated, located at `start_coords`.
 @export var start_color := Color.GREEN
+
+## Color of the last cell generated.
 @export var end_color := Color.YELLOW
+
+## Color of each terninal (i.e. dead end) cell, other than the first and last cells generated.
 @export var terminal_color := Color.RED
+
+## Color of each character that represents a cell, or path that connects two cells, other than the
+## start, end, and terminal cells.
 @export var path_color := Color.GRAY
+
+## Color of each character that represents the empty space (i.e. "walls") surrounding each cell and
+## path that connects two cells.
 @export var wall_color := Color.DIM_GRAY
 
-## A map of Vector2i coordinates and their corresponding GridCell objects.
+## A map of `Vector2i` coordinates and their corresponding `MazeGridCell` objects.
 var cells: Dictionary = {}
+
+
+func clear() -> void:
+	cells.clear()
 
 
 func get_cell(direction: StringName, relative_to: Vector2i, distance: int = 1) -> MazeGridCell:
@@ -127,9 +151,10 @@ func _get_cell_text(cell: MazeGridCell, directions: Array, is_rich_text: bool = 
 	
 	for direction in directions:
 		var text: String = ""
-		var is_path = !cell.walls.has(direction)
-		var is_wall = !is_path and cell.walls[direction]
-		var is_endpoint = " " == direction
+		var is_null = !cell
+		var is_path = !is_null and !cell.walls.has(direction)
+		var is_wall = is_null or (!is_path and cell.walls[direction])
+		var is_endpoint = !is_null and " " == direction
 		
 		if is_path:
 			text = "%d" % cell.type

@@ -19,6 +19,7 @@ wall_color = Color(0.411765, 0.411765, 0.411765, 1)
 
 [node name="Example" type="Node2D"]
 script = ExtResource("1_gt4q6")
+show_progress_bar = true
 
 [node name="Maze" type="Node2D" parent="."]
 script = ExtResource("2_atk16")
