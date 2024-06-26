@@ -1,5 +1,5 @@
-class_name PrintableMazeGrid
-extends MazeGrid
+class_name PrintableMaze
+extends Maze
 
 @export_group("Rich Text Colors")
 @export var start_color := Color.GREEN
@@ -34,14 +34,14 @@ func to_text(is_rich_text: bool = false) -> String:
 	var output: Array[String] = []
 	
 	# Loop over each row in the grid.
-	for y in range(grid_size.y):
-		var is_last_y: bool = grid_size.y - 1 == y
+	for y in range(grid.size.y):
+		var is_last_y: bool = grid.size.y - 1 == y
 		var lines: Array = ["", "", ""] if is_last_y else ["", ""]
 		
 		# Loop over each cell in the row.
-		for x in range(grid_size.x):
+		for x in range(grid.size.x):
 			var cell := get_cell_at(Vector2i(x, y))
-			var is_last_x: bool = grid_size.x - 1 == x
+			var is_last_x: bool = grid.size.x - 1 == x
 			var line_0_walls: Array = ["nw", "n", "ne"] if is_last_x else ["nw", "n"]
 			var line_1_walls: Array = ["w", " ", "e"] if is_last_x else ["w", " "]
 			var line_2_walls: Array = ["sw", "s", "se"] if is_last_x else ["sw", "s"]

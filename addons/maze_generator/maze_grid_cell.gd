@@ -1,5 +1,5 @@
 class_name MazeGridCell
-extends Maze
+extends Resource
 
 enum Type {
 	PATH,
@@ -13,14 +13,14 @@ enum Type {
 var type: Type = Type.PATH
 
 var walls: Dictionary = {
-	N: true,
-	NE: true,
-	E: true,
-	SE: true,
-	S: true,
-	SW: true,
-	W: true,
-	NW: true,
+	Direction.N: true,
+	Direction.NE: true,
+	Direction.E: true,
+	Direction.SE: true,
+	Direction.S: true,
+	Direction.SW: true,
+	Direction.W: true,
+	Direction.NW: true,
 }
 
 
@@ -36,16 +36,11 @@ func to_dict() -> Dictionary:
 	}
 
 
-func get_wall_count(cardinal: bool = true) -> int:
+func get_wall_count(directions: Array[StringName] = Direction.cardinal) -> int:
 	var count: int = 0
-	var directions: Array[StringName] = cardinal_directions
 	
 	for direction in directions:
 		if walls[direction]:
 			count += 1
 	
 	return count
-
-
-func is_dead_end(cardinal: bool = true) -> bool:
-	return 1 == get_wall_count(cardinal)
