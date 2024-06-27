@@ -1,0 +1,180 @@
+[gd_scene load_steps=5 format=3 uid="uid://drwn347kv0ttv"]
+
+[ext_resource type="Theme" uid="uid://bjemcxo6mk3o0" path="res://examples/assets/themes/settings_theme.tres" id="1_jhb0t"]
+[ext_resource type="Theme" uid="uid://dlu0hbktlkj8x" path="res://examples/assets/themes/preview_theme.tres" id="2_0vn2s"]
+[ext_resource type="Script" path="res://examples/ui/ui.gd" id="2_myxwi"]
+[ext_resource type="FontFile" uid="uid://cmunte0hjobbi" path="res://examples/assets/fonts/roboto_mono/static/RobotoMono-Bold.ttf" id="3_saraq"]
+
+[node name="TabContainer" type="TabContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 2560.0
+offset_bottom = 1440.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_jhb0t")
+tab_alignment = 1
+current_tab = 0
+script = ExtResource("2_myxwi")
+
+[node name="Preview" type="CenterContainer" parent="."]
+layout_mode = 2
+theme = ExtResource("2_0vn2s")
+metadata/_tab_index = 0
+
+[node name="ProgressBar" type="ProgressBar" parent="Preview"]
+visible = false
+custom_minimum_size = Vector2(1200, 60)
+layout_mode = 2
+
+[node name="Settings" type="CenterContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="List" type="VBoxContainer" parent="Settings"]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+alignment = 1
+
+[node name="SettingsLabel" type="Label" parent="Settings/List"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_saraq")
+theme_override_font_sizes/font_size = 36
+text = "MazeGrid Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SettingsLabelSeparator" type="HSeparator" parent="Settings/List"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(2.08165e-12, 60)
+layout_mode = 2
+
+[node name="GridXLabel" type="Label" parent="Settings/List"]
+custom_minimum_size = Vector2(2.08165e-12, 40)
+layout_mode = 2
+text = "Grid Width"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridX" type="HSlider" parent="Settings/List"]
+custom_minimum_size = Vector2(2.08165e-12, 40)
+layout_mode = 2
+min_value = 4.0
+max_value = 64.0
+value = 8.0
+rounded = true
+ticks_on_borders = true
+
+[node name="GridXSeperator" type="HSeparator" parent="Settings/List"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(2.08165e-12, 30)
+layout_mode = 2
+
+[node name="GridYLabel" type="Label" parent="Settings/List"]
+custom_minimum_size = Vector2(2.08165e-12, 40)
+layout_mode = 2
+text = "Grid Height"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridY" type="HSlider" parent="Settings/List"]
+custom_minimum_size = Vector2(2.08165e-12, 40)
+layout_mode = 2
+min_value = 4.0
+max_value = 20.0
+value = 8.0
+rounded = true
+ticks_on_borders = true
+
+[node name="GridYSeperator" type="HSeparator" parent="Settings/List"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(2.08165e-12, 60)
+layout_mode = 2
+
+[node name="StartCoordsLabel" type="Label" parent="Settings/List"]
+layout_mode = 2
+text = "Start Position"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartCoordsLabelSeperator" type="HSeparator" parent="Settings/List"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(2.08165e-12, 30)
+layout_mode = 2
+
+[node name="StartCoordsContainer" type="HBoxContainer" parent="Settings/List"]
+layout_mode = 2
+alignment = 1
+
+[node name="StartXLabel" type="Label" parent="Settings/List/StartCoordsContainer"]
+layout_mode = 2
+text = "X:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartX" type="SpinBox" parent="Settings/List/StartCoordsContainer"]
+layout_mode = 2
+min_value = -1.0
+max_value = 64.0
+value = -1.0
+rounded = true
+alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="Settings/List/StartCoordsContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(40, 2.08165e-12)
+layout_mode = 2
+
+[node name="StartYLabel" type="Label" parent="Settings/List/StartCoordsContainer"]
+layout_mode = 2
+text = "Y:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartY" type="SpinBox" parent="Settings/List/StartCoordsContainer"]
+layout_mode = 2
+min_value = -1.0
+max_value = 20.0
+value = -1.0
+alignment = 1
+
+[node name="StartCoordsSeparator" type="HSeparator" parent="Settings/List"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(2.08165e-12, 60)
+layout_mode = 2
+
+[node name="PreviewOptionsLabel" type="Label" parent="Settings/List"]
+layout_mode = 2
+text = "Preview Loading Options"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PreviewOptionsLabelSeparator" type="HSeparator" parent="Settings/List"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(2.08165e-12, 30)
+layout_mode = 2
+
+[node name="PreviewOptionShowNothing" type="CheckButton" parent="Settings/List"]
+layout_mode = 2
+button_pressed = true
+text = "Show Nothing (Fastest)"
+
+[node name="PreviewOptionShowProgressBar" type="CheckButton" parent="Settings/List"]
+layout_mode = 2
+text = "Show Progress Bar"
+
+[node name="PreviewOptionShowMaze" type="CheckButton" parent="Settings/List"]
+layout_mode = 2
+text = "Show Maze"
+
+[node name="PreviewOptionsSeparator" type="HSeparator" parent="Settings/List"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(2.08165e-12, 60)
+layout_mode = 2
+
+[node name="Preview" type="Button" parent="Settings/List"]
+layout_mode = 2
+text = "Preview"

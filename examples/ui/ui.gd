@@ -1,6 +1,8 @@
-extends Node2D
+extends TabContainer
 
-## Represents the tab indices for $TabContainer.
+signal draw_maze
+
+## References for the TabContainer tab indices.
 enum Tab {
 	PREVIEW,
 	SETTINGS,
@@ -12,43 +14,11 @@ const X: StringName = "x"
 ## Syntactic sugar; use Y as a Dictionary key instead of the string "y".
 const Y: StringName = "y"
 
-## If `true`, a progress bar will be displayed when generating the maze; if `false` (default), the
-## maze will be redrawn at each increment, as it is generated.
-@export var show_progress_bar: bool = false
-
 ## Maze child node.
-@onready var maze: Maze = $Maze
+@export var maze: Maze
 
 ## RichTextLabel where BBCode representation of Maze is displayed.
-@onready var preview_maze: RichTextLabel = $TabContainer/Preview/MazePreview
-
-## ProgressBar displayed when generating a new Maze.
-@onready var preview_progress_bar: ProgressBar = $TabContainer/Preview/ProgressBar
-
-## HSlider nodes in the Settings UI, used for adjusting `maze.grid.size`.
-@onready var settings_grid: Dictionary = {
-	X: $TabContainer/Settings/List/GridX,
-	Y: $TabContainer/Settings/List/GridY,
-}
-
-## Button in the Settings UI, used for switching back to the Preview tab.
-@onready var settings_preview: Button = $TabContainer/Settings/List/Preview
-
-## CheckButton group in the Settings UI, used toggle between different maze preview loading options.
-@onready var settings_preview_options: Dictionary = {
-	"show_nothing": $TabContainer/Settings/List/PreviewOptionShowNothing,
-	"show_progress_bar": $TabContainer/Settings/List/PreviewOptionShowProgressBar,
-	"show_maze": $TabContainer/Settings/List/PreviewOptionShowMaze,
-}
-
-## SpinBox nodes in the Settings UI, used for adjusting `maze.grid.start_coords`.
-@onready var settings_start_coords: Dictionary = {
-	X: $TabContainer/Settings/List/StartCoordsContainer/StartX,
-	Y: $TabContainer/Settings/List/StartCoordsContainer/StartY,
-}
-
-## TabContainer used to switch between the Preview and Settings UI tabs.
-@onready var tab_container: TabContainer = $TabContainer
+@export var maze_preview: Node
 
 ## Used to detect changes to the Settings UI, when toggling between preview loading options.
 var current_preview_option: CheckButton
@@ -65,17 +35,55 @@ var last_start_coords: Vector2i
 ## Used to make `settings_preview_options` CheckButtons behave like radio buttons.
 var settings_preview_options_group := ButtonGroup.new()
 
+## If `true`, a progress bar will be displayed when generating the maze; if `false` (default), the
+## maze will be redrawn at each increment, as it is generated.
+var show_progress_bar: bool = false
+
+## ProgressBar displayed when generating a new Maze.
+@onready var preview_progress_bar: ProgressBar = $Preview/ProgressBar
+
+## Container for `maze_preview` and `preview_progress_bar`.
+@onready var preview_tab: Container = $Preview
+
+## HSlider nodes in the Settings UI, used for adjusting `maze.grid.size`.
+@onready var settings_grid: Dictionary = {
+	X: $Settings/List/GridX,
+	Y: $Settings/List/GridY,
+}
+
+## Button in the Settings UI, used for switching back to the Preview tab.
+@onready var settings_preview: Button = $Settings/List/Preview
+
+## CheckButton group in the Settings UI, used toggle between different maze preview loading options.
+@onready var settings_preview_options: Dictionary = {
+	"show_nothing": $Settings/List/PreviewOptionShowNothing,
+	"show_progress_bar": $Settings/List/PreviewOptionShowProgressBar,
+	"show_maze": $Settings/List/PreviewOptionShowMaze,
+}
+
+## SpinBox nodes in the Settings UI, used for adjusting `maze.grid.start_coords`.
+@onready var settings_start_coords: Dictionary = {
+	X: $Settings/List/StartCoordsContainer/StartX,
+	Y: $Settings/List/StartCoordsContainer/StartY,
+}
+
 
 ## Run once when the node is added to the scene tree.
 func _ready() -> void:
 	# Generate the initial GridMaze.
 	maze.generate()
+	
 	# Initialize values for the Settings UI.
 	_initialize_settings()
+	
 	# Connect signals to the appropriate handler methods.
 	_connect_signals()
-	# Update value of `preview_maze` RichTextLabel with BBCode representation of `maze`.
-	draw_grid()
+	
+	# Reparent the `maze_preview` node so it appears within the Preview tab.
+	if maze_preview.is_inside_tree():
+		maze_preview.reparent.call_deferred(preview_tab)
+	else:
+		preview_tab.add_child.call_deferred(maze_preview)
 
 
 ## Called for each unhandled InputEvent.
@@ -86,15 +94,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	
 	# Regenerate the Maze when the R key is pressed on the Preview tab.
 	if is_current_tab_preview() and event.keycode == KEY_R and event.is_pressed():
-		await maze.generate()
-
-
-## Updates value of `preview_maze` RichTextLabel with BBCode representation of `maze`.
-func draw_grid() -> void:
-	# Wrap the rich text representation of `maze`, to center it horizontally.
-	var rich_text: String = "[center]%s[/center]" % maze.grid.to_rich_text()
-	# Update the RichTextLabel text value.
-	preview_maze.set_text(rich_text)
+		maze.generate()
 
 
 ## Returns `true` if the `maze.grid.size` value changed since `maze.generate()` was last called.
@@ -119,12 +119,12 @@ func has_start_coords_changed() -> bool:
 
 ## Returns `true` if the current tab is the Preview tab.
 func is_current_tab_preview() -> bool:
-	return Tab.PREVIEW == tab_container.current_tab
+	return Tab.PREVIEW == current_tab
 
 
 ## Returns `true` if the current tab is the Settings UI.
 func is_current_tab_settings() -> bool:
-	return Tab.SETTINGS == tab_container.current_tab
+	return Tab.SETTINGS == current_tab
 
 
 ## Connects signals to the appropriate handler methods.
@@ -149,7 +149,7 @@ func _connect_signals() -> void:
 	settings_start_coords[Y].value_changed.connect(_on_settings_start_coords_y_value_changed)
 	
 	# Used to regenerate `maze` if necessary, when switching to the Preview tab.
-	tab_container.tab_changed.connect(_on_tab_container_tab_changed)
+	tab_changed.connect(_on_tab_container_tab_changed)
 
 
 ## Initializes values for the Settings UI.
@@ -174,24 +174,23 @@ func _initialize_settings() -> void:
 	_update_preview_options()
 
 
-## Hides `preview_maze`, and initializes and shows `preview_progress_bar`.
+## Hides `maze_preview`, and initializes and shows `preview_progress_bar`.
 func _on_grid_generate_begin() -> void:
 	if show_progress_bar:
-		preview_maze.set_visible(false)
+		maze_preview.set_visible(false)
 		preview_progress_bar.set_value(0)
 		preview_progress_bar.set_visible(true)
 	else:
-		draw_grid()
+		draw_maze.emit()
 
 
-## Hides `preview_progress_bar`, and redraws and shows `preview_maze`.
+## Hides `preview_progress_bar`, and redraws and shows `maze_preview`.
 func _on_grid_generate_end() -> void:
+	draw_maze.emit()
+	
 	if show_progress_bar:
-		draw_grid()
 		preview_progress_bar.set_visible(false)
-		preview_maze.set_visible(true)
-	else:
-		draw_grid()
+		maze_preview.set_visible(true)
 
 
 ## Updates `preview_progress_bar` incrementally, based on `generate_progress` signal data.
@@ -199,7 +198,7 @@ func _on_grid_generate_progress(progress: float) -> void:
 	if show_progress_bar:
 		preview_progress_bar.set_value(progress)
 	else:
-		draw_grid()
+		draw_maze.emit()
 
 
 ## Sync HSlider with `maze.grid.size.x`, HSlider tooltip, and `maze.grid.start_coords.x` max value.
@@ -218,7 +217,7 @@ func _on_settings_grid_y_value_changed(value: float) -> void:
 
 ## Switch to the Preview tab when the Preview button is pressed on the Settings UI.
 func _on_settings_preview_button_up() -> void:
-	tab_container.set_current_tab(Tab.PREVIEW)
+	set_current_tab(Tab.PREVIEW)
 
 
 ## Toggle between the different preview loading options.
