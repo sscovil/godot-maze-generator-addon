@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://drwn347kv0ttv"]
 
-[ext_resource type="Theme" uid="uid://bjemcxo6mk3o0" path="res://examples/assets/themes/settings_theme.tres" id="1_jhb0t"]
-[ext_resource type="Theme" uid="uid://dlu0hbktlkj8x" path="res://examples/assets/themes/preview_theme.tres" id="2_0vn2s"]
+[ext_resource type="Theme" uid="uid://bjemcxo6mk3o0" path="res://examples/ui/assets/themes/settings_theme.tres" id="1_jhb0t"]
+[ext_resource type="Theme" uid="uid://dlu0hbktlkj8x" path="res://examples/ui/assets/themes/preview_theme.tres" id="2_0vn2s"]
 [ext_resource type="Script" path="res://examples/ui/ui.gd" id="2_myxwi"]
-[ext_resource type="FontFile" uid="uid://cmunte0hjobbi" path="res://examples/assets/fonts/roboto_mono/static/RobotoMono-Bold.ttf" id="3_saraq"]
+[ext_resource type="FontFile" uid="uid://cmunte0hjobbi" path="res://examples/ui/assets/fonts/roboto_mono/static/RobotoMono-Bold.ttf" id="3_saraq"]
 
 [node name="TabContainer" type="TabContainer"]
 anchors_preset = 15

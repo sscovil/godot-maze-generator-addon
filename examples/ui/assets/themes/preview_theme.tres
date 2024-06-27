@@ -1,9 +1,9 @@
 [gd_resource type="Theme" load_steps=5 format=3 uid="uid://dlu0hbktlkj8x"]
 
-[ext_resource type="FontFile" uid="uid://crfeeuddpgih3" path="res://examples/assets/fonts/roboto_mono/static/RobotoMono-Regular.ttf" id="1_ecm0m"]
-[ext_resource type="FontFile" uid="uid://cmunte0hjobbi" path="res://examples/assets/fonts/roboto_mono/static/RobotoMono-Bold.ttf" id="2_tho64"]
-[ext_resource type="FontFile" uid="uid://wt543d1ocb3e" path="res://examples/assets/fonts/roboto_mono/static/RobotoMono-BoldItalic.ttf" id="3_5yvb5"]
-[ext_resource type="FontFile" uid="uid://cuyl2xu160d8l" path="res://examples/assets/fonts/roboto_mono/static/RobotoMono-Italic.ttf" id="4_d2ddf"]
+[ext_resource type="FontFile" uid="uid://crfeeuddpgih3" path="res://examples/ui/assets/fonts/roboto_mono/static/RobotoMono-Regular.ttf" id="1_ecm0m"]
+[ext_resource type="FontFile" uid="uid://cmunte0hjobbi" path="res://examples/ui/assets/fonts/roboto_mono/static/RobotoMono-Bold.ttf" id="2_tho64"]
+[ext_resource type="FontFile" uid="uid://wt543d1ocb3e" path="res://examples/ui/assets/fonts/roboto_mono/static/RobotoMono-BoldItalic.ttf" id="3_5yvb5"]
+[ext_resource type="FontFile" uid="uid://cuyl2xu160d8l" path="res://examples/ui/assets/fonts/roboto_mono/static/RobotoMono-Italic.ttf" id="4_d2ddf"]
 
 [resource]
 Label/constants/line_spacing = -10

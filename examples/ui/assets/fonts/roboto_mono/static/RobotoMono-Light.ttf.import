@@ -2,19 +2,20 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://jlk50ofleg0u"
-path="res://.godot/imported/RobotoMono-Medium.ttf-e12d9e423570c3dba3bd6dd7c529e611.fontdata"
+uid="uid://dryiwkwf6wup7"
+path="res://.godot/imported/RobotoMono-Light.ttf-d2bdd9007e613644490c5bc6148ebedf.fontdata"
 
 [deps]
 
-source_file="res://examples/assets/fonts/roboto_mono/static/RobotoMono-Medium.ttf"
-dest_files=["res://.godot/imported/RobotoMono-Medium.ttf-e12d9e423570c3dba3bd6dd7c529e611.fontdata"]
+source_file="res://examples/ui/assets/fonts/roboto_mono/static/RobotoMono-Light.ttf"
+dest_files=["res://.godot/imported/RobotoMono-Light.ttf-d2bdd9007e613644490c5bc6148ebedf.fontdata"]
 
 [params]
 
 Rendering=null
 antialiasing=1
 generate_mipmaps=false
+disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
 msdf_size=48

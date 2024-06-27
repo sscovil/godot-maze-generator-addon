@@ -2,19 +2,20 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://d2g63ca8ns8m0"
-path="res://.godot/imported/RobotoMono-ThinItalic.ttf-35904ac984d54a9225b654ab560447ca.fontdata"
+uid="uid://cob6d1wvgtfkh"
+path="res://.godot/imported/RobotoMono-SemiBoldItalic.ttf-7d06e44ae5dc6088c1960ee6c21499bc.fontdata"
 
 [deps]
 
-source_file="res://examples/assets/fonts/roboto_mono/static/RobotoMono-ThinItalic.ttf"
-dest_files=["res://.godot/imported/RobotoMono-ThinItalic.ttf-35904ac984d54a9225b654ab560447ca.fontdata"]
+source_file="res://examples/ui/assets/fonts/roboto_mono/static/RobotoMono-SemiBoldItalic.ttf"
+dest_files=["res://.godot/imported/RobotoMono-SemiBoldItalic.ttf-7d06e44ae5dc6088c1960ee6c21499bc.fontdata"]
 
 [params]
 
 Rendering=null
 antialiasing=1
 generate_mipmaps=false
+disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
 msdf_size=48
