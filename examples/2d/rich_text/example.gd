@@ -239,15 +239,17 @@ func _on_settings_start_coords_y_value_changed(value: float) -> void:
 ## When switching back to the Preview tab, call `maze.generate()` if any settings have changed.
 func _on_tab_container_tab_changed(tab: int) -> void:
 	if tab as Tab == Tab.PREVIEW and has_settings_changed():
+		# Update cached settings, to detect future changes.
 		last_grid_size = maze.grid.size
 		last_preview_option = current_preview_option
+		last_start_coords = maze.grid.start_coords
+		
+		# Wait for next frame so the UI can switch to the Preview tab, then regenerate the maze.
 		maze.generate_next_frame()
 
 
 ## When preview options radio button is toggled, update maze preview load configuration.
 func _update_preview_options() -> void:
-	last_preview_option = current_preview_option
-	
 	if settings_preview_options["show_nothing"].is_pressed():
 		current_preview_option = settings_preview_options["show_nothing"]
 		maze.emit_progress_signals = false

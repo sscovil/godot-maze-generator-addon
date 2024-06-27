@@ -165,21 +165,27 @@ func _get_cell_text(cell: MazeGridCell, directions: Array, is_rich_text: bool = 
 		
 		if is_rich_text:
 			var color: String
+			var hint: String
 			
 			if is_endpoint:
 				match cell.type:
 					MazeGridCell.Type.START:
 						color = start_color.to_html()
+						hint = "Start Position"
 					MazeGridCell.Type.TERMINAL:
 						color = terminal_color.to_html()
+						hint = "Dead End"
 					MazeGridCell.Type.END:
 						color = end_color.to_html()
+						hint = "End Position"
 			elif is_wall:
 				color = wall_color.to_html()
 			elif is_path:
 				color = path_color.to_html()
 			
 			text = "[color=#%s]%s[/color]" % [color, text]
+			if hint:
+				text = "[hint=%s]%s[/hint]" % [hint, text]
 		
 		output += text
 	
