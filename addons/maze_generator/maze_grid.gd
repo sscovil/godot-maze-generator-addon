@@ -52,7 +52,7 @@ func get_cell_at(coords: Vector2i) -> MazeGridCell:
 	return cells.get(coords, null)
 
 
-func get_cell_neighbors(coords: Vector2i, cardinal: bool = true) -> Array[MazeGridCell]:
+func get_cell_neighbors(coords: Vector2i) -> Array[MazeGridCell]:
 	var neighbors: Array[MazeGridCell] = []
 	var distance: int = 1
 	
@@ -70,7 +70,10 @@ func get_random_cell() -> MazeGridCell:
 
 
 func get_random_coords() -> Vector2i:
-	return cells.keys().pick_random()
+	return Vector2i(
+		range(size.x).pick_random(),
+		range(size.y).pick_random(),
+	)
 
 
 func set_adjoining_walls(coords_a: Vector2i, coords_b: Vector2i, value: bool) -> void:

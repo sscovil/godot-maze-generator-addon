@@ -1,7 +1,12 @@
 extends Node2D
 
+## Maze node, where all the maze generation logic lives.
 @onready var maze: Maze = $Maze
+
+## Maze preview, used to displaying `maze` layout as rich text.
 @onready var maze_preview: RichTextLabel = $MazePreview
+
+## TabContainer where `maze_preview` will be displayed, alongside a Settings tab. 
 @onready var ui: TabContainer = $UI
 
 
