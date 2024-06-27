@@ -10,7 +10,7 @@ extends Node2D
 @onready var ui: TabContainer = $UI
 
 
-## Run once when the node is added to the scene tree.
+## Runs once when the node is added to the scene tree.
 func _ready() -> void:
 	# Connect signals to the appropriate handler methods.
 	_connect_signals()

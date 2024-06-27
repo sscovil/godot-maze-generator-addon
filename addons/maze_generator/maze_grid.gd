@@ -38,25 +38,35 @@ const RandomPosition := Vector2i(-1, -1)
 var cells: Dictionary = {}
 
 
+## Clears the `cells` Dictionary, removing all entries from it.
 func clear() -> void:
 	cells.clear()
 
 
+## Returns the MazeGridCell in a given direction and distance, relative to the given coordinates.
 func get_cell(direction: StringName, relative_to: Vector2i, distance: int = 1) -> MazeGridCell:
 	var coords: Vector2i = Direction.get_vector(direction, relative_to, distance)
-
 	return get_cell_at(coords)
 
 
+## Returns the MazeGridCell at the given coordinates.
 func get_cell_at(coords: Vector2i) -> MazeGridCell:
 	return cells.get(coords, null)
 
 
-func get_cell_neighbors(coords: Vector2i) -> Array[MazeGridCell]:
+## Returns an array of MazeGridCell neighbors of the MazeGridCell at the given coordinates. By
+## default, it will only return the neighbors to the north, east, south, and west (i.e. the cardinal
+## directions), but this behavior can be changed by supplying an array of directions as an optional
+## second argument. Use the Direction constants (ex: [Direction.NW, Direction.SE]), or the
+## `Direction.list` array, when supplying a second argument to this method.
+func get_cell_neighbors(
+	coords: Vector2i,
+	directions: Array[StringName] = Direction.cardinal
+) -> Array[MazeGridCell]:
 	var neighbors: Array[MazeGridCell] = []
 	var distance: int = 1
 	
-	for direction in Direction.cardinal:
+	for direction in directions:
 		var neighbor_coords = Direction.get_vector(direction, coords, distance)
 		var neighbor: MazeGridCell = get_cell_at(neighbor_coords)
 		if neighbor:
@@ -65,10 +75,12 @@ func get_cell_neighbors(coords: Vector2i) -> Array[MazeGridCell]:
 	return neighbors
 
 
+## Returns a random MazeGridCell.
 func get_random_cell() -> MazeGridCell:
 	return cells[get_random_coords()]
 
 
+## Returns a random Vector2i with valid grid coordinates.
 func get_random_coords() -> Vector2i:
 	return Vector2i(
 		range(size.x).pick_random(),
@@ -76,7 +88,8 @@ func get_random_coords() -> Vector2i:
 	)
 
 
-func set_adjoining_walls(coords_a: Vector2i, coords_b: Vector2i, value: bool) -> void:
+## Sets the appropriate `walls` values for two neighboring cells to the given value.
+func set_adjoining_walls(value: bool, coords_a: Vector2i, coords_b: Vector2i) -> void:
 	var cell_a := get_cell_at(coords_a)
 	var cell_b := get_cell_at(coords_b)
 	
@@ -87,6 +100,7 @@ func set_adjoining_walls(coords_a: Vector2i, coords_b: Vector2i, value: bool) ->
 		cell_b.walls[Direction.get_direction(coords_a - coords_b)] = value
 
 
+## Sets the `type` of the MazeGridCell at the given coordinates.
 func set_cell_as_type(coords: Vector2i, type: MazeGridCell.Type) -> void:
 	var cell := get_cell_at(coords)
 	
@@ -127,9 +141,14 @@ func to_text(is_rich_text: bool = false) -> String:
 		for x in range(size.x):
 			var cell := get_cell_at(Vector2i(x, y))
 			var is_last_x: bool = size.x - 1 == x
-			var line_0_walls: Array = ["nw", "n", "ne"] if is_last_x else ["nw", "n"]
-			var line_1_walls: Array = ["w", " ", "e"] if is_last_x else ["w", " "]
-			var line_2_walls: Array = ["sw", "s", "se"] if is_last_x else ["sw", "s"]
+			var line_0_walls: Array[StringName] = [Direction.NW, Direction.N]
+			var line_1_walls: Array[StringName] = [Direction.W, Direction.X]
+			var line_2_walls: Array[StringName] = [Direction.SW, Direction.S]
+			
+			if is_last_x:
+				line_0_walls.append(Direction.NE)
+				line_1_walls.append(Direction.E)
+				line_2_walls.append(Direction.SE)
 			
 			lines[0] += _get_cell_text(cell, line_0_walls, is_rich_text)
 			lines[1] += _get_cell_text(cell, line_1_walls, is_rich_text)
@@ -145,11 +164,17 @@ func to_text(is_rich_text: bool = false) -> String:
 
 
 ## Helper method to get a text representation of a section of a given cell, as indicated by the
-## given directions array.
+## given directions array. For example, if directions is [Direction.NW, Direction.N], this method
+## will return the appropriate text character for the cell's northwest and north walls, as a string.
 ## 
-## For example, if directions is ["nw", "n"], this method will return the appropriate ascii for
-## the cell's northwest and north walls, as a single string.
-func _get_cell_text(cell: MazeGridCell, directions: Array, is_rich_text: bool = false) -> String:
+## If the optional third argument `is_rich_text` is set to `true`, the result will be wrapped in
+## BBCode tags to add color and tooltip hints about the cell type. More info on BBCode tags can be
+## found here: https://docs.godotengine.org/en/stable/tutorials/ui/bbcode_in_richtextlabel.html
+func _get_cell_text(
+	cell: MazeGridCell,
+	directions: Array[StringName],
+	is_rich_text: bool = false,
+) -> String:
 	var output: String = ""
 	
 	for direction in directions:
@@ -157,15 +182,21 @@ func _get_cell_text(cell: MazeGridCell, directions: Array, is_rich_text: bool = 
 		var is_null = !cell
 		var is_path = !is_null and !cell.walls.has(direction)
 		var is_wall = is_null or (!is_path and cell.walls[direction])
-		var is_endpoint = !is_null and " " == direction
+		var is_endpoint = !is_null and Direction.X == direction
 		
+		# If this is the cell itself, display the numeric value of its `type`.
 		if is_path:
 			text = "%d" % cell.type
+		
+		# If this is a wall, display a bullet character.
 		elif is_wall:
 			text = "•"
+		
+		# If this is a path between two cells, display the numeric value of MazeGridCell.Type.PATH.
 		else:
 			text = "%d" % MazeGridCell.Type.PATH
 		
+		# Wrap output in BBCode tags, if `is_rich_text` value is `true`.
 		if is_rich_text:
 			var color: String
 			var hint: String
@@ -186,10 +217,14 @@ func _get_cell_text(cell: MazeGridCell, directions: Array, is_rich_text: bool = 
 			elif is_path:
 				color = path_color.to_html()
 			
+			# Add a BBCode color tag, based on the Rich Text Colors settings.
 			text = "[color=#%s]%s[/color]" % [color, text]
+			
+			# Add a BBCode tooltip hint, if applicable.
 			if hint:
 				text = "[hint=%s]%s[/hint]" % [hint, text]
 		
+		# Concatenate the text into a single output string.
 		output += text
 	
 	return output

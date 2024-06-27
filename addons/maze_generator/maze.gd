@@ -9,19 +9,19 @@ signal generate_begin()
 ## Emitted when the `generate()` method has completed.
 signal generate_end()
 
-## Emitted each time 
+## Emitted each time incremental progress is made when the `generate()` method is running. If the
+## `emit_progress_signals` value is set to `false` (default), this signal will not be emitted.
 signal generate_progress(progress: float)
 
+## MazeGrid node
 @export var grid: MazeGrid
 
-@export_group("Generator Settings")
-
 ## If set to `true`, the `generate_progress` signal will be emitted at various increments when the
-## `generate()` method is called. This makes the process of generating a maze more asynchronous, in
-## that methods connected to that signal will be called, but it also makes `generate()` take a bit
-## longer to complete.
+## `generate()` method is called. This makes the process of generating a maze more asynchronous,
+## but it also makes `generate()` take a bit longer to complete.
 @export var emit_progress_signals: bool = false
 
+## Used to prevent the `generate()` method from being called again while it is running.
 var is_generating: bool = false
 
 
@@ -60,7 +60,7 @@ func size() -> int:
 
 ## Connect two cells by removing the walls between them.
 func _connect_cells(from: Vector2i, to: Vector2i):
-	grid.set_adjoining_walls(from, to, false)
+	grid.set_adjoining_walls(false, from, to)
 
 
 ## Generate the maze using depth-first search with backtracking.

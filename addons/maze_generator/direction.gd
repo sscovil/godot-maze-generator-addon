@@ -3,14 +3,15 @@
 class_name Direction
 extends Object
 
-const N: StringName = "n"
-const NE: StringName = "ne"
-const E: StringName = "e"
-const SE: StringName = "se"
-const S: StringName = "s"
-const SW: StringName = "sw"
-const W: StringName = "w"
-const NW: StringName = "nw"
+const N: StringName = "N"
+const NE: StringName = "NE"
+const E: StringName = "E"
+const SE: StringName = "SE"
+const S: StringName = "S"
+const SW: StringName = "SW"
+const W: StringName = "W"
+const NW: StringName = "NW"
+const X: StringName = "X"
 
 ## Used to reference the cardinal directions (north, east, south, and west).
 static var cardinal: Array[StringName] = [N, E, S, W]
@@ -30,6 +31,7 @@ static var direction_vector_map: Dictionary = {
 	Direction.SW: Vector2i(-1, 1),
 	Direction.W: Vector2i(-1, 0),
 	Direction.NW: Vector2i(-1, -1),
+	Direction.X: Vector2i.ZERO,
 }
 
 ## Used to determine which direction a 2D maze coordinate is, relative to another coordinate. For
@@ -44,6 +46,7 @@ static var vector_direction_map: Dictionary = {
 	Vector2i(-1, 1): Direction.SW,
 	Vector2i(-1, 0): Direction.W,
 	Vector2i(-1, -1): Direction.NW,
+	Vector2i.ZERO: Direction.X,
 }
 
 
