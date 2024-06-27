@@ -7,7 +7,7 @@
 [ext_resource type="Theme" uid="uid://dlu0hbktlkj8x" path="res://examples/assets/themes/grid_preview_theme.tres" id="4_b072u"]
 [ext_resource type="FontFile" uid="uid://cmunte0hjobbi" path="res://examples/assets/fonts/roboto_mono/static/RobotoMono-Bold.ttf" id="5_cstjk"]
 
-[sub_resource type="Resource" id="Resource_8wcpc"]
+[sub_resource type="Resource" id="Resource_yl8xv"]
 script = ExtResource("3_2m2vd")
 size = Vector2i(16, 8)
 start_coords = Vector2i(-1, -1)
@@ -23,7 +23,7 @@ show_progress_bar = true
 
 [node name="Maze" type="Node2D" parent="."]
 script = ExtResource("2_atk16")
-grid = SubResource("Resource_8wcpc")
+grid = SubResource("Resource_yl8xv")
 
 [node name="TabContainer" type="TabContainer" parent="."]
 anchors_preset = 15
@@ -42,7 +42,7 @@ layout_mode = 2
 theme = ExtResource("4_b072u")
 metadata/_tab_index = 0
 
-[node name="Maze" type="RichTextLabel" parent="TabContainer/Preview"]
+[node name="MazePreview" type="RichTextLabel" parent="TabContainer/Preview"]
 clip_contents = false
 layout_mode = 2
 tooltip_text = "Press 'R' to regenerate the maze."

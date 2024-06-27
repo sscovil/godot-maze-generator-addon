@@ -20,7 +20,7 @@ const Y: StringName = "y"
 @onready var maze: Maze = $Maze
 
 ## RichTextLabel where BBCode representation of Maze is displayed.
-@onready var preview_maze: RichTextLabel = $TabContainer/Preview/Maze
+@onready var preview_maze: RichTextLabel = $TabContainer/Preview/MazePreview
 
 ## ProgressBar displayed when generating a new Maze.
 @onready var preview_progress_bar: ProgressBar = $TabContainer/Preview/ProgressBar
@@ -240,6 +240,7 @@ func _on_settings_start_coords_y_value_changed(value: float) -> void:
 func _on_tab_container_tab_changed(tab: int) -> void:
 	if tab as Tab == Tab.PREVIEW and has_settings_changed():
 		last_grid_size = maze.grid.size
+		last_preview_option = current_preview_option
 		maze.generate_next_frame()
 
 

@@ -16,11 +16,17 @@ signal generate_progress(progress: float)
 ## longer to complete.
 @export var emit_progress_signals: bool = false
 
+var is_generating: bool = false
+
 
 ## Generate a maze by picking a random, unvisited neighboring cell and knocking down the walls
 ## between the two cells. Repeat this until we can go no further, then back track and keep trying
 ## to find alternative paths, until every cell has been visited.
 func generate():
+	if is_generating:
+		return
+	is_generating = true
+	
 	var progress: float = 0.0
 	var steps: int = grid.size.x * grid.size.y
 	var increment: float = 100.0 / steps
@@ -88,6 +94,8 @@ func generate():
 				backtracking = true
 			cursor -= 1
 			coords = visited[cursor]
+	
+	is_generating = false
 
 
 func generate_next_frame() -> void:
