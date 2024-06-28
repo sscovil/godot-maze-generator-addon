@@ -82,7 +82,7 @@ func _generate_maze():
 	# two cells, until we can no longer move forward. At each endpoint, mark the cell as
 	# `MazeGridCell.Type.TERMINAL`. Then backtrack, trying again at each cell to move in a
 	# new direction to an unvisited cell, until all cells have been visited.
-	while visited.size() < size():
+	while size() > visited.size():
 		# Only add each visited cell once, to avoid ending the loop early when backtracking.
 		if coords not in visited:
 			visited.append(coords)
@@ -103,7 +103,7 @@ func _generate_maze():
 		
 		# If there are no unvisted neighboring cells, mark the cell as `MazeGridCell.Type.TERMINAL`
 		# and start backtracking.
-		else:
+		elif size() > visited.size():
 			if !backtracking:
 				grid.set_cell_as_type(coords, MazeGridCell.Type.TERMINAL)
 				backtracking = true
