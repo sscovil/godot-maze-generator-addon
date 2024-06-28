@@ -39,11 +39,17 @@ var settings_preview_options_group := ButtonGroup.new()
 ## maze will be redrawn at each increment, as it is generated.
 var show_progress_bar: bool = false
 
-## ProgressBar displayed when generating a new Maze.
-@onready var preview_progress_bar: ProgressBar = $Preview/ProgressBar
-
-## Container for `maze_preview` and `preview_progress_bar`.
+## Container for `maze_preview` and `progress_bar`.
 @onready var preview_tab: Container = $Preview
+
+## ProgressBar displayed when generating a new Maze.
+@onready var progress_bar: ProgressBar = $Preview/ProgressBarContainer/ProgressBar
+
+## VBoxContainer that holds `progress_bar` and `progress_bar_label`.
+@onready var progress_bar_container: VBoxContainer = $Preview/ProgressBarContainer
+
+## Label displayed above `progress_bar`.
+@onready var progress_bar_label: Label = $Preview/ProgressBarContainer/ProgressBarLabel
 
 ## HSlider nodes in the Settings UI, used for adjusting `maze.grid.size`.
 @onready var settings_grid: Dictionary = {
@@ -65,6 +71,7 @@ var show_progress_bar: bool = false
 @onready var settings_start_coords: Dictionary = {
 	X: $Settings/List/StartCoordsContainer/StartX,
 	Y: $Settings/List/StartCoordsContainer/StartY,
+	"random": $Settings/List/RandomStartCoords,
 }
 
 
@@ -97,6 +104,14 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		maze.generate()
 
 
+## Returns maze setting controls (i.e. so they can be enabled/disabled as a group).
+func get_maze_setting_controls() -> Array[Control]:
+	var settings: Array[Control] = []
+	settings.append_array(settings_grid.values())
+	settings.append_array(settings_start_coords.values())
+	return settings
+
+
 ## Returns `true` if the `maze.grid.size` value changed since `maze.generate()` was last called.
 func has_grid_size_changed() -> bool:
 	return last_grid_size != maze.grid.size
@@ -127,6 +142,16 @@ func is_current_tab_settings() -> bool:
 	return Tab.SETTINGS == current_tab
 
 
+## Helper method to either call `set_editable()` or `set_disabled()` on a Control node.
+func set_editable(node: Control, value: bool) -> void:
+	if node.has_method(&"set_editable"):
+		node.set_editable(value)
+	elif node.has_method(&"set_disabled"):
+		node.set_disabled(!value)
+	else:
+		push_warning("Unable to call set_editable() or set_disabled() for node: %s" % node)
+
+
 ## Connects signals to the appropriate handler methods.
 func _connect_signals() -> void:
 	# Used to display a progress bar when generating the Maze.
@@ -147,6 +172,7 @@ func _connect_signals() -> void:
 	# Used to update `maze.grid.start_coords` based on changes in the Settings UI.
 	settings_start_coords[X].value_changed.connect(_on_settings_start_coords_x_value_changed)
 	settings_start_coords[Y].value_changed.connect(_on_settings_start_coords_y_value_changed)
+	settings_start_coords["random"].toggled.connect(_on_settings_start_coords_random_toggled)
 	
 	# Used to regenerate `maze` if necessary, when switching to the Preview tab.
 	tab_changed.connect(_on_tab_container_tab_changed)
@@ -174,29 +200,34 @@ func _initialize_settings() -> void:
 	_update_preview_options()
 
 
-## Hides `maze_preview`, and initializes and shows `preview_progress_bar`.
+## Hides `maze_preview`, and initializes and shows `progress_bar`.
 func _on_grid_generate_begin() -> void:
 	if show_progress_bar:
 		maze_preview.set_visible(false)
-		preview_progress_bar.set_value(0)
-		preview_progress_bar.set_visible(true)
+		progress_bar.set_value(0)
+		progress_bar_container.set_visible(true)
+		for node: Control in get_maze_setting_controls():
+			set_editable(node, false)
 	else:
 		draw_maze.emit()
 
 
-## Hides `preview_progress_bar`, and redraws and shows `maze_preview`.
+## Hides `progress_bar`, and redraws and shows `maze_preview`.
 func _on_grid_generate_end() -> void:
 	draw_maze.emit()
 	
 	if show_progress_bar:
-		preview_progress_bar.set_visible(false)
+		progress_bar_container.set_visible(false)
 		maze_preview.set_visible(true)
+		for node: Control in get_maze_setting_controls():
+			set_editable(node, true)
 
 
-## Updates `preview_progress_bar` incrementally, based on `generate_progress` signal data.
+## Updates `progress_bar` incrementally, based on `generate_progress` signal data.
 func _on_grid_generate_progress(progress: float) -> void:
 	if show_progress_bar:
-		preview_progress_bar.set_value(progress)
+		progress_bar_label.set_text(maze.status)
+		progress_bar.set_value(progress)
 	else:
 		draw_maze.emit()
 
@@ -223,6 +254,10 @@ func _on_settings_preview_button_up() -> void:
 ## Toggle between the different preview loading options.
 func _on_settings_preview_options_group_pressed(button: Button) -> void:
 	_update_preview_options()
+
+
+func _on_settings_start_coords_random_toggled(toggled_on: bool) -> void:
+	_update_settings_start_coords(X, -1 if toggled_on else 0)
 
 
 ## Sync SpinBox value with `maze.grid.start_coords.x`.
@@ -278,19 +313,23 @@ func _update_settings_grid_size_tooltip(axis: String) -> void:
 func _update_settings_start_coords(axis: StringName, value: float) -> void:
 	var other_axis: StringName = Y if axis == X else X
 	var max_value: int = maze.grid.size[axis] - 1
+	var clamped_value: int = clampi(floor(value), -1, max_value)
 	
 	# Ensure the value is constrained to the valid range, based on `maze.grid.size`.
-	maze.grid.start_coords[axis] = clampi(floor(value), -1, max_value)
+	maze.grid.start_coords[axis] = clamped_value
+	settings_start_coords[axis].set_value(clamped_value)
 	
 	# If the value being set is -1, set the other axis value to also be -1.
 	if maze.grid.start_coords[axis] == -1:
 		maze.grid.start_coords[other_axis] = -1
 		settings_start_coords[other_axis].set_value(-1)
+		settings_start_coords["random"].set_pressed(true)
 	
 	# If the other value is -1 and the value beind set is greater, set the other axis value to 0.
 	elif maze.grid.start_coords[other_axis] == -1:
 		maze.grid.start_coords[other_axis] = 0
 		settings_start_coords[other_axis].set_value(0)
+		settings_start_coords["random"].set_pressed(false)
 
 
 ## When `maze.grid.size` changes, update the corresponding `maze.grid.start_coords` max value.

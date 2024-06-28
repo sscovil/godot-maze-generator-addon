@@ -24,6 +24,9 @@ signal generate_progress(progress: float)
 ## Used to prevent the `generate()` method from being called again while it is running.
 var is_generating: bool = false
 
+## Text to describe the current state of the maze.
+var status: String = "Uninitialized"
+
 
 ## Generate a maze using a depth-first search algorithm with backtracking.
 func generate():
@@ -65,6 +68,8 @@ func _connect_cells(from: Vector2i, to: Vector2i):
 
 ## Generate the maze using depth-first search with backtracking.
 func _generate_maze():
+	status = "Generating"
+	
 	var visited: Array[Vector2i] = []
 	var backtracking: bool = false
 	var coords := _get_start_coords()
@@ -93,7 +98,8 @@ func _generate_maze():
 			
 			# Update progress and emit signal, if configured to do so.
 			if emit_progress_signals:
-				await _update_progress(visited.size())
+				var progress: float = visited.size()
+				await _update_progress(progress)
 		
 		# If there are no unvisted neighboring cells, mark the cell as `MazeGridCell.Type.TERMINAL`
 		# and start backtracking.
@@ -106,6 +112,8 @@ func _generate_maze():
 	
 	# Mark the last cell as `MazeGridCell.Type.END`.
 	grid.set_cell_as_type(coords, MazeGridCell.Type.END)
+	
+	status = "Ready"
 
 
 ## Pick a random neighboring cell that has not yet been marked as visited.
@@ -131,6 +139,7 @@ func _get_start_coords() -> Vector2i:
 
 ## Initialize the grid with empty cells.
 func _initialize_grid():
+	status = "Initializing"
 	grid.clear()
 	
 	# Loop through each column of the `grid`.
@@ -144,7 +153,8 @@ func _initialize_grid():
 		
 		# Update progress after each column is initialized and emit signal, if configured to do so.
 		if emit_progress_signals:
-			await _update_progress(x * grid.size.y)
+			var progress: float = x * grid.size.y
+			await _update_progress(progress)
 
 
 ## Wait for the next frame.
